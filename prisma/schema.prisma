@@ -1,0 +1,40 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = []
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Program {
+  id             String   @id @default(cuid())
+  programName    String   @db.VarChar(255)
+  advertiserName String   @db.VarChar(255)
+  networkName    String   @db.VarChar(255)
+  category       String   @db.VarChar(255)
+  categoryMapping String? @db.VarChar(255)
+  commissionRate Float?   // Commission rate (percentage or fixed amount)
+  epc           Float?   // Earnings per click
+  url           String?  @db.Text // Program's website URL
+  logoUrl       String?  @db.Text // Program's logo URL
+  cookieDuration Int?    // Cookie duration in days
+  currency      String?  @db.VarChar(10) // Currency for commission rates
+  market        String   @db.VarChar(10) // Market code (e.g., "DK")
+  feed          Boolean? // Whether program has a product feed
+  pendingActive Boolean? // Program activation status
+  lastUpdated   DateTime @default(now()) @updatedAt
+  createdAt     DateTime @default(now())
+
+  @@unique([programName, networkName])
+  @@index([category])
+  @@index([networkName])
+  @@index([market])
+}
